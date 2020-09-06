@@ -1,0 +1,90 @@
+import java.util.*;
+public class BankersAlgo {
+    public static void main(String[] args) 
+    {
+        System.out.println("\tBanker's Algorithm\n");
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the number of processes: ");
+        int p = sc.nextInt();   //processes
+        int counter = 0;
+        System.out.print("Enter the number of resources: ");
+        int r = sc.nextInt();   //resources
+        int allocation[][] = new int[p][r];
+        int max[][] = new int[p][r];
+        int available[] = new int[r];
+        int need[][] = new int[p][r];
+        System.out.println("Enter "+(p*r)+" elements for matrix \'allocation\':");
+        for(int i=0;i<p;i++)
+        {
+            for(int j=0;j<r;j++)
+            {
+                allocation[i][j] = sc.nextInt();
+            }
+        }        
+        System.out.println("Enter "+(p*r)+" elements for matrix \'maximum\':");
+        for(int i=0;i<p;i++)
+        {
+            for(int j=0;j<r;j++)
+            {
+                max[i][j] = sc.nextInt();
+            }
+        }        
+        System.out.println("Enter "+r+" elements for matrix \'available\':");
+        for(int i=0;i<r;i++)
+        {
+            available[i] = sc.nextInt();
+        }        
+        for(int i=0;i<p;i++)
+        {
+            for(int j=0;j<r;j++)
+            {
+                need[i][j] = max[i][j] - allocation[i][j];
+            }
+        }                
+        int done[] = new int[p];    //to check which processes are complete.
+        int undone[] = new int[p];    //to check which processes are incomplete.
+        for(int i=0;i<p;i++)
+        {
+            done[i] = 0;
+            undone[i] = 1;
+        }       
+        while(counter < p)
+        {
+            for(int i=0;i<p;i++)
+            {
+                for(int j=0;j<r;j++)
+                {
+                    if(undone[i]!=0)
+                    {                        
+                        if(need[i][j] > available[j])
+                        {
+                            System.out.println("need (P"+i+") cannot acquire resources.");
+                            if(counter == (p-1))
+                            {
+                                System.out.println("This is a deadlock situtation!");
+                                System.exit(0);
+                            }
+                            break;
+                        }
+                        else if(j==(r-1))
+                        {
+                            System.out.println("need (P"+i+") can acquire resources and complete execution.");
+                            for(j=0;j<r;j++)
+                            {
+                                available[j] += allocation[i][j];
+                            }
+                            done[counter] = i;
+                            undone[i] = 0;
+                            counter++;
+                        }                        
+                    }
+                }
+            }
+        }        
+        System.out.println("Order of process execution: ");
+        for(int i=0;i<p;i++)
+        {
+            System.out.print("P("+done[i]+")");
+        }
+    }    
+}
